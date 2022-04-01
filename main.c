@@ -7,12 +7,12 @@ are completed you will have to guess the final score.
 #include <stdlib.h>
 #include <time.h>
 
-#define TIME 1 // time in seconds
-#define MAX 20 // number of players limit
+#define TIME 3000 // time in miliseconds
+#define MAX 10 // number of players limit
 
 int userPrompt(int value, char *valName);
 void scoreCounter(int players, int rounds);
-void printRoundNumber(int i, int rounds);
+void displayRoundScore(int i, int rounds);
 void playerCounter(int players, int i, int rounds, int temp, int *playerScore);
 int generateRandomNumber();
 void delay(int millis);
@@ -27,47 +27,51 @@ int main()
     printf("Memory game: during each turn the players will gain points. \nYou will have to remember each players score and calculate the players total. \nAfter all rounds are completed you will have to guess the final score.\n\n");
 
     numPlayers = userPrompt(numPlayers, players);
+    if (numPlayers == -1){
+        exit(0);
+    }
     numRounds = userPrompt(numRounds, rounds);
+    if (numRounds == -1){
+        exit(0);
+    }
 
     scoreCounter(numPlayers, numRounds);
+    //displayTotal();
 
     return 0;
 }
 
-
+// used to define number of players and rounds in game
 int userPrompt(int value, char *valName)
 {
-    printf("Please enter the number of %s from 1-20: ", valName);
+    printf("Please enter the number of %s from 1-%d: ", valName, MAX);
     scanf("%d", &value);
 
     if (value <= 0|| value > MAX) {
-        printf("Invalid input - try again with an integer value");
-        exit(0);
+        printf("Invalid input - exiting programme...\n");
+        return (-1);
     }
-
     return (value);
 }
 
-
+// generates scores of players for each round and sums it up
 void scoreCounter(int players, int rounds)
 {
     int temp = 0;
     int playerScore[MAX] = {0};
 
-    srand(time(0)); // generates random seed based on time
+    srand(time(NULL)); // generates random seed based on time
 
     for (int i = 0; i <= rounds; i++)
     {
         // delay and clear screen
         if (i != 0) {
             delay(TIME);
-            system("cls");    //->Windows
-            //system("clear");    //->UNIX
-
-
+            //system("cls");    //->Windows
+            system("clear");    //->UNIX
         }
 
-        printRoundNumber(i, rounds);
+        displayRoundScore(i, rounds);
         playerCounter(players, i, rounds, temp, playerScore);
     }
 
@@ -75,7 +79,7 @@ void scoreCounter(int players, int rounds)
 }
 
 
-void printRoundNumber(int i, int rounds)
+void displayRoundScore(int i, int rounds)
 {
     if (i != rounds)
         printf("Round %d: \n", i + 1);
@@ -103,10 +107,10 @@ void playerCounter(int players, int i, int rounds, int temp, int *playerScore)
     return;
 }
 
-
+// returns a random number between 3-12
 int generateRandomNumber()
 {
-    return (rand() % 10 + 3.0);		// returns a random number between 3-12
+    return (rand() % 10 + 3.0);		
 }
 
 
